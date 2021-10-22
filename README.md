@@ -46,4 +46,5 @@ You can activate multiple gamemodes by adding the values together. (eg: 1+2 = 3)
 
 ## Credits
 JPiolho: Author
+
 Dan the man: For help in testing some things
