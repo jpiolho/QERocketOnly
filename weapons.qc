@@ -375,7 +375,9 @@ void() W_FireRocket =
 {
 	local	entity missile, mpuff;
 	
-	self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
+	if(!(GetGameMode() & GM_INFINITE_AMMO)) {
+		self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
+	}
 	
 	sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
 

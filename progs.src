@@ -3,6 +3,7 @@
 defs.qc
 subs.qc
 maps.qc
+gamemodes.qc
 fight.qc
 ai.qc
 combat.qc

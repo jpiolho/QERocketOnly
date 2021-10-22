@@ -87,6 +87,16 @@ void(entity targ, entity attacker) Killed =
 	monster_death_use();
 	self.th_die ();
 	
+	// Handle health by killing
+	if(self != attacker 					// Ignore self kills
+	&& GetGameMode() & GM_HEALTH_BY_KILLING 
+	&& attacker.health > 0					   // Ignore if the attacker is dead
+	&& attacker.health < attacker.max_health) // Only if the attacker has missing health
+	{
+		attacker.health = attacker.max_health;
+		localsound(attacker,"items/health1.wav");
+	}
+
 	self = oself;
 };
 
@@ -162,6 +172,10 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 
 // team play damage avoidance
 	if ( (teamplay == 1) && (targ.team > 0)&&(targ.team == attacker.team) )
+		return;
+
+	// No self damage gamemode
+	if(GetGameMode() & GM_NO_SELF_DAMAGE && targ == attacker)
 		return;
 		
 // do the damage

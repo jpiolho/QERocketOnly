@@ -333,6 +333,7 @@ vector	VEC_HULL2_MAX = '32 32 64';
 
 // protocol bytes
 float	SVC_TEMPENTITY		= 23;
+float	SVC_CENTERPRINT		= 26;
 float	SVC_KILLEDMONSTER	= 27;
 float	SVC_FOUNDSECRET		= 28;
 float	SVC_INTERMISSION	= 30;

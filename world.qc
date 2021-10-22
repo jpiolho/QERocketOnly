@@ -174,6 +174,11 @@ void() worldspawn =
 	lastspawn = world;
 	InitBodyQue ();
 
+	precache_sound ("items/protect.wav");
+	precache_sound ("items/protect2.wav");
+	precache_sound ("items/protect3.wav");
+	precache_sound("items/health1.wav");
+
 // custom map attributes
 	if (self.model == "maps/e1m8.bsp")
 		cvar_set ("sv_gravity", "100");

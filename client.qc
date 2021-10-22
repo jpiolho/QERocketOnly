@@ -86,7 +86,7 @@ void() DecodeLevelParms =
 	self.health = parm2;
 	self.armorvalue = parm3;
 	self.ammo_shells = parm4;
-	self.ammo_nails = parm5;
+	//self.ammo_nails = parm5;
 	self.ammo_rockets = parm6;
 	self.ammo_cells = parm7;
 	self.weapon = parm8;
@@ -530,6 +530,22 @@ void() PutClientInServer =
 
 	player_stand1 ();
 	
+
+	/*
+	 * Rocket-only mod
+	 */
+	self.items = IT_ROCKET_LAUNCHER | IT_AXE; // Give rocket launcher and axe
+	self.ammo_rockets = (GetGameMode() & GM_INFINITE_AMMO) ? 999 : 15; // Initial 15 rockets
+	self.impulse = 7; // Automatically select the weapon
+
+	// Give spawn invulnerability
+	if(!(GetGameMode() & GM_NO_SPAWN_PROTECTION)) {
+		self.items |= IT_INVULNERABILITY;
+		self.invincible_time = 1;
+		self.invincible_finished = time + 3;
+	}
+
+
 	if (deathmatch || coop)
 	{
 		makevectors(self.angles);
@@ -1117,6 +1133,14 @@ void() PlayerPostThink =
 		return;		// intermission or finale
 	if (self.deadflag)
 		return;
+
+	if(self.ammo_nails == 0)
+	{
+		centerprint(self,"Welcome to Rocket-only deathmatch\n\nAny bugs are probably related to the mod\nGamemode: ",ftos(GetGameMode()),"\n\nHave fun!");
+
+		// Mark as message sent
+		self.ammo_nails = 1;
+	}
 		
 // do weapon stuff
 
