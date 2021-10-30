@@ -545,6 +545,11 @@ void() PutClientInServer =
 		self.invincible_finished = time + 3;
 	}
 
+	if(gamemode & GM_SPAWN_WITH_QUAD) {
+		self.items |= IT_QUAD;
+		self.super_time = 1;
+		self.super_damage_finished = time + 30;
+	}
 
 	if (deathmatch || coop)
 	{
