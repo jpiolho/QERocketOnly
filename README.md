@@ -43,6 +43,15 @@ You can activate multiple gamemodes by adding the values together. (eg: 1+2 = 3)
 ### 16: Health by killing
    There will be no health pickups in the map, except mega health. Whenever a player kills another player, their health will be instantly restored.
    An incoming rocket from the player that was killed can still damage you.
+   
+### 32: No Quad
+   No quad damage will be spawned in the map.
+
+### 64: Random Quad Respawn
+   Quad damage respawn time will be randomized between 1 min and 4 mins.
+
+### 128: Spawn with quad
+   Players will spawn with a quad damage (30s).
 
 ## Credits
 JPiolho: Author
