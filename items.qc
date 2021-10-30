@@ -117,7 +117,7 @@ void() item_health =
 
 	if (self.spawnflags & H_ROTTEN)
 	{
-		if(GetGameMode() & GM_HEALTH_BY_KILLING)
+		if(gamemode & GM_HEALTH_BY_KILLING)
 		{
 			remove(self);
 			return;
@@ -143,7 +143,7 @@ void() item_health =
 	}
 	else
 	{
-		if(GetGameMode() & GM_HEALTH_BY_KILLING)
+		if(gamemode & GM_HEALTH_BY_KILLING)
 		{
 			remove(self);
 			return;
@@ -723,7 +723,7 @@ float WEAPON_BIG2 = 1;
 void() item_rockets =
 {
 	// Remove ammo packs if flag is set
-	if(GetGameMode() & GM_NO_AMMO_PACKS || GetGameMode() & GM_INFINITE_AMMO) {
+	if(gamemode & GM_NO_AMMO_PACKS || gamemode & GM_INFINITE_AMMO) {
 		remove(self);
 		return;
 	}

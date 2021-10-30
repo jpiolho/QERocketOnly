@@ -535,11 +535,11 @@ void() PutClientInServer =
 	 * Rocket-only mod
 	 */
 	self.items = IT_ROCKET_LAUNCHER | IT_AXE; // Give rocket launcher and axe
-	self.ammo_rockets = (GetGameMode() & GM_INFINITE_AMMO) ? 999 : 15; // Initial 15 rockets
+	self.ammo_rockets = (gamemode & GM_INFINITE_AMMO) ? 999 : 15; // Initial 15 rockets
 	self.impulse = 7; // Automatically select the weapon
 
 	// Give spawn invulnerability
-	if(!(GetGameMode() & GM_NO_SPAWN_PROTECTION)) {
+	if(!(gamemode & GM_NO_SPAWN_PROTECTION)) {
 		self.items |= IT_INVULNERABILITY;
 		self.invincible_time = 1;
 		self.invincible_finished = time + 3;
@@ -1136,7 +1136,7 @@ void() PlayerPostThink =
 
 	if(self.ammo_nails == 0)
 	{
-		centerprint(self,"Welcome to Rocket-only deathmatch\n\nAny bugs are probably related to the mod\nGamemode: ",ftos(GetGameMode()),"\n\nHave fun!");
+		centerprint(self,"Welcome to Rocket-only deathmatch\n\nAny bugs are probably related to the mod\nGamemode: ",ftos(gamemode),"\n\nHave fun!");
 
 		// Mark as message sent
 		self.ammo_nails = 1;

@@ -89,7 +89,7 @@ void(entity targ, entity attacker) Killed =
 	
 	// Handle health by killing
 	if(self != attacker 					// Ignore self kills
-	&& GetGameMode() & GM_HEALTH_BY_KILLING 
+	&& gamemode & GM_HEALTH_BY_KILLING 
 	&& attacker.health > 0					   // Ignore if the attacker is dead
 	&& attacker.health < attacker.max_health) // Only if the attacker has missing health
 	{
@@ -175,7 +175,7 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 		return;
 
 	// No self damage gamemode
-	if(GetGameMode() & GM_NO_SELF_DAMAGE && targ == attacker)
+	if(gamemode & GM_NO_SELF_DAMAGE && targ == attacker)
 		return;
 		
 // do the damage

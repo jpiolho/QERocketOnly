@@ -375,7 +375,7 @@ void() W_FireRocket =
 {
 	local	entity missile, mpuff;
 	
-	if(!(GetGameMode() & GM_INFINITE_AMMO)) {
+	if(!(gamemode & GM_INFINITE_AMMO)) {
 		self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 	}
 	
