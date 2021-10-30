@@ -2,6 +2,7 @@
 
 defs.qc
 subs.qc
+math.qc
 maps.qc
 gamemodes.qc
 fight.qc

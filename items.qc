@@ -1149,7 +1149,11 @@ local float		best;
 	{
 		self.mdl = self.model;
 		
-		if ((self.classname == "item_artifact_invulnerability") ||
+		if(self.classname == "item_artifact_super_damage" && gamemode & GM_RANDOM_QUAD_RESPAWN)
+		{
+			self.nextthink = time + 60 + RandomRange(0,60*3);
+		}
+		else if ((self.classname == "item_artifact_invulnerability") ||
 			(self.classname == "item_artifact_invisibility"))
 			self.nextthink = time + 60*5;
 		else
