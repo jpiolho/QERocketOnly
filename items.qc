@@ -1258,6 +1258,12 @@ The next attack from the player will do 4x damage
 */
 void() item_artifact_super_damage =
 {
+	if(gamemode & GM_NO_QUAD)
+	{
+		remove(self);
+		return;	
+	}
+
 	self.touch = powerup_touch;
 
 	precache_model ("progs/quaddama.mdl");
