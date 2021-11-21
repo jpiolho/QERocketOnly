@@ -85,7 +85,6 @@ When a button is touched, it moves some distance in the direction of it's angle,
 */
 void() func_button =
 {
-local float		gtemp, ftemp;
 
 	if (self.sounds == 0)
 	{
@@ -107,11 +106,11 @@ local float		gtemp, ftemp;
 		precache_sound ("buttons/switch04.wav");
 		self.noise = "buttons/switch04.wav";
 	}
-	
+
 	SetMovedir ();
 
 	self.classname = "func_button"; // Better bot support
-	
+
 	self.movetype = MOVETYPE_PUSH;
 	self.solid = SOLID_BSP;
 	setmodel (self, self.model);
