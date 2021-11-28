@@ -556,6 +556,12 @@ void() PutClientInServer =
 		self.items |= IT_INVULNERABILITY;
 		self.invincible_time = 1;
 		self.invincible_finished = time + 3;
+
+		self.cnt |= ROFL_SPAWNED_INVULNERABILITY;
+
+		// Remove the model so we can send our own model with 'alpha'
+		setmodel(self,string_null);
+		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 	}
 
 	if(gamemode & GM_SPAWN_WITH_QUAD) {
@@ -1037,7 +1043,9 @@ void() CheckPowerups =
 		{
 			if (self.invincible_time == 1)
 			{
-				sprint (self, "Protection is almost burned out\n");
+				if(!(self.cnt & ROFL_SPAWNED_INVULNERABILITY))
+					sprint (self, "Protection is almost burned out\n");
+					
 				stuffcmd (self, "bf\n");
 				sound (self, CHAN_AUTO, "items/protect2.wav", 1, ATTN_NORM);
 				self.invincible_time = time + 1;
@@ -1055,6 +1063,11 @@ void() CheckPowerups =
 			self.items = self.items - IT_INVULNERABILITY;
 			self.invincible_time = 0;
 			self.invincible_finished = 0;
+
+			if(self.cnt & ROFL_SPAWNED_INVULNERABILITY) {
+				self.cnt -= ROFL_SPAWNED_INVULNERABILITY;
+				RO_ShowPlayer();
+			}
 		}
 		if (self.invincible_finished > time)
 			self.effects = self.effects | EF_DIMLIGHT;
@@ -1146,13 +1159,15 @@ void() PlayerPostThink =
 	if (self.deadflag)
 		return;
 
-	if(self.ammo_nails == 0)
+	if(!(self.cnt & ROFL_SEEN_START_MESSAGE))
 	{
 		centerprint(self,"Welcome to Rocket-only deathmatch\n\nAny bugs are probably related to the mod\nGamemode: ",ftos(gamemode),"\n\nHave fun!");
 
 		// Mark as message sent
-		self.ammo_nails = 1;
+		self.cnt |= ROFL_SEEN_START_MESSAGE;
 	}
+
+	RO_SendAlphaPlayers();
 
 // do weapon stuff
 

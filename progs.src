@@ -5,6 +5,7 @@ subs.qc
 math.qc
 maps.qc
 gamemodes.qc
+rocketonly.qc
 fight.qc
 ai.qc
 combat.qc
