@@ -391,15 +391,27 @@ void() W_FireRocket =
 // set missile speed
 
 	makevectors (self.v_angle);
-	missile.velocity = aim(self, 1000);
-	missile.velocity = missile.velocity * 1000;
+	missile.velocity = aim(self, Rocket_GetSpeed());
+	missile.velocity = missile.velocity * Rocket_GetSpeed();
 	missile.angles = vectoangles(missile.velocity);
 
 	missile.touch = T_MissileTouch;
 
-// set missile duration
-	missile.nextthink = time + 5;
-	missile.think = SUB_Remove;
+
+	if(gamemode & (GM_COLLIDE_ROCKETS | GM_HOMING_ROCKETS | GM_SLOW_BUILDUP))
+	{
+		// set missile duration
+		missile.waitmin = time;
+		missile.waitmax = time + 5;
+
+		missile.nextthink = time;
+		missile.think = Rocket_Think;
+	}
+	else
+	{
+		missile.nextthink = time + 5;
+		missile.think = SUB_Remove;
+	}
 
 	setmodel (missile, "progs/missile.mdl");
 	setsize (missile, '0 0 0', '0 0 0');

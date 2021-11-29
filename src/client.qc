@@ -558,10 +558,7 @@ void() PutClientInServer =
 		self.invincible_finished = time + 3;
 
 		self.cnt |= ROFL_SPAWNED_INVULNERABILITY;
-
-		// Remove the model so we can send our own model with 'alpha'
-		setmodel(self,string_null);
-		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+		self.alpha = 0.25;
 	}
 
 	if(gamemode & GM_SPAWN_WITH_QUAD) {
@@ -1066,7 +1063,7 @@ void() CheckPowerups =
 
 			if(self.cnt & ROFL_SPAWNED_INVULNERABILITY) {
 				self.cnt -= ROFL_SPAWNED_INVULNERABILITY;
-				RO_ShowPlayer();
+				self.alpha = 1;
 			}
 		}
 		if (self.invincible_finished > time)
@@ -1166,8 +1163,6 @@ void() PlayerPostThink =
 		// Mark as message sent
 		self.cnt |= ROFL_SEEN_START_MESSAGE;
 	}
-
-	RO_SendAlphaPlayers();
 
 // do weapon stuff
 
