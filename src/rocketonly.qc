@@ -105,6 +105,12 @@ void() Rocket_PrintWelcomeMessage =
 	WriteChars('A','n','y',' ','b','u','g','s',' ','a','r','e',' ','p','r','o');WriteChars('b','a','b','l','y',' ','r','e','l','a','t','e','d',' ','t','o');WriteChars(' ','t','h','e',' ','m','o','d','\n');
 	WriteChars('H','a','v','e',' ','f','u','n','!');
 
+	// Check if we should disable print gamemodes
+	if(cvar("saved2") == 1) {
+		WriteByte(MSG_ONE,0);
+		return;
+	}
+
 	WriteByte(MSG_ONE,'\n');
 	WriteByte(MSG_ONE,'\n');
 	WriteByte(MSG_ONE,'\n');
@@ -181,7 +187,11 @@ void() Rocket_Think =
 		local vector from = self.owner.origin + self.owner.view_ofs;
 		traceline(from,from + (v_forward * 2048),FALSE,self);
 
-		self.velocity = normalize(trace_endpos - self.origin) * Rocket_GetSpeed();
+		local vector dir = normalize(trace_endpos - self.origin);
+		local vector desired  = dir * 96;
+
+		self.velocity += desired;
+		self.velocity = normalize(self.velocity) * Rocket_GetSpeed();
 		self.angles = vectoangles(self.velocity);
 	}
 
