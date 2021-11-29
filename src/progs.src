@@ -3,6 +3,7 @@
 defs.qc
 subs.qc
 math.qc
+utils.qc
 maps.qc
 gamemodes.qc
 rocketonly.qc

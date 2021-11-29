@@ -1158,8 +1158,7 @@ void() PlayerPostThink =
 
 	if(!(self.cnt & ROFL_SEEN_START_MESSAGE))
 	{
-		centerprint(self,"Welcome to Rocket-only deathmatch\n\nAny bugs are probably related to the mod\nGamemode: ",ftos(gamemode),"\n\nHave fun!");
-
+		Rocket_PrintWelcomeMessage();
 		// Mark as message sent
 		self.cnt |= ROFL_SEEN_START_MESSAGE;
 	}

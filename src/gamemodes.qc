@@ -14,3 +14,4 @@ float GM_SLOW_ROCKETS             = 512;
 float GM_FAST_ROCKETS             = 1024;
 float GM_COLLIDE_ROCKETS          = 2048;
 float GM_SLOW_BUILDUP             = 4096;
+
