@@ -180,7 +180,7 @@ void() Rocket_Think =
 		return;
 	}
 
-	if(gamemode & GM_HOMING_ROCKETS) {
+	if(gamemode & GM_HOMING_ROCKETS && self.owner.deadflag == DEAD_NO) {
 		makevectors(self.owner.v_angle);
 
 		// Calculate where the rocket should aim towards
