@@ -2,9 +2,9 @@
 	"manifestVersion": 1,
 	
 	"name": "QE Rocket-only",
-	"version": "1.1.0e",
+	"version": "1.2.0",
 	"author": "JPiolho",
-	"date": "06/11/2021",
+	"date": "29/11/2021",
 	"description": "Dynamically makes any Quake (id1) deathmatch map rocket-only. There are a few gamemode options you can choose from.\n\nThe gamemode(s) can be set by using the console variable: saved1.\nYou can activate multiple gamemodes by adding the values together.\n\nGamemodes:\n1: No ammo packs\n2: No spawn protection\n4: No self damage\n8: Infinite ammo\n16: Health by killing\n32: No Quad\n64: Random Quad Respawn\n128: Spawn with Quad",
 	"gamedir": "id1",
 	"screenshots": [
@@ -13,6 +13,6 @@
 		"https://i.imgur.com/RqYp8MU.png"
 	],
 	
-	"download": "QERocketOnly_v1.1.0.zip",
+	"download": "QERocketOnly_v1.2.0.zip",
 	"pak": "pak0.pak"
 }
