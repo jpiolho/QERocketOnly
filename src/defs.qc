@@ -423,6 +423,8 @@ float		skill;
 .string 	map;
 .float		worldtype;	// 0=medieval 1=metal 2=base
 
+.float      alpha;
+
 //================================================
 
 .string		killtarget;
