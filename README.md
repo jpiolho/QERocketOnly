@@ -52,6 +52,27 @@ You can activate multiple gamemodes by adding the values together. (eg: 1+2 = 3)
 
 ### 128: Spawn with quad
    Players will spawn with a quad damage (30s).
+   
+### 256: Homing rockets
+   Rockets will always steer towards where the player is aiming.
+
+### 512: Slow rockets
+   Rockets are slower than normal.
+
+### 1024: Fast Rockets
+   Rockets are faster than normal.
+   
+### 2048: Collide Rockets
+   Rockets can collide with each other and obliterate each other.
+   
+### 4096: Slow buildup
+   Rockets start slow when launched, gradually increasing to maximum speed.
+
+## Server options
+Server options are set via `saved2` cvar. You can activate multiple server options by adding the values together (eg: 1+2 = 3)
+
+### 1: Don't print gamemode
+  Do not print the gamemode in the starting message. This includes the number and gamemode acronyms.
 
 ## Credits
 JPiolho: Author
