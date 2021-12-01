@@ -1,6 +1,7 @@
 *.nav
 *.pak
 *.exe
+*.zip
 
 src/error.log
 src/fteqcc.log
