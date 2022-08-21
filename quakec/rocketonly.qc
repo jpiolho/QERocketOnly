@@ -4,6 +4,9 @@ enumflags
     ROFL_SPAWNED_INVULNERABILITY,
 };
 
+entity host;
+
+.float menu_gamemode;
 
 float(float gm) Rocket_GamemodeName_GetLength =
 {
@@ -22,6 +25,8 @@ float(float gm) Rocket_GamemodeName_GetLength =
 		case GM_SLOW_BUILDUP: return 2;
 		case GM_SLOW_ROCKETS: return 2;
 		case GM_SPAWN_WITH_QUAD: return 3;
+		case GM_SUDDEN_DEATH: return 2;
+		case GM_NO_ARMOR: return 2;
 		default: return 0;
 	}
 }
@@ -88,59 +93,205 @@ void(float gm) Rocket_GamemodeName_PrintName =
 			WriteByte(MSG_ONE,'S');
 			WriteByte(MSG_ONE,'P');
 			break;
+		case GM_SUDDEN_DEATH:
+			WriteByte(MSG_ONE,'S');
+			WriteByte(MSG_ONE,'D');
+			break;
+		case GM_SUDDEN_DEATH:
+			WriteByte(MSG_ONE,'N');
+			WriteByte(MSG_ONE,'A');
+			break;
 	}
 }
+
+
+void(entity t) Rocket_PrintGamemodeSelectMenu;
+void(float currentGamemode) Rocket_PrintNextGamemodeInfo;
+void() Rocket_PrintWelcomeMessage;
+
+void(float menu) Menu_GamemodeInfo =
+{
+	if(menu == 1)
+		Rocket_PrintNextGamemodeInfo(self.menu_gamemode);
+}
+
+void(float currentGamemode) Rocket_PrintNextGamemodeInfo =
+{
+	while(currentGamemode < GM__END__) {
+		if(currentGamemode >= 1)
+			currentGamemode *= 2;
+		else
+			currentGamemode = 1;		
+
+		if(gamemode & currentGamemode) {
+			
+			switch(currentGamemode) {
+				case GM_NO_AMMO_PACKS: CreateMenu("[Gamemode Info]\nNo ammo packs\n\nThere are no ammo packs in the map"); break;
+				case GM_NO_SPAWN_PROTECTION: CreateMenu("[Gamemode Info]\nNo spawn protection\n\nYou don't get invulnerability when you spawn"); break;
+				case GM_NO_SELF_DAMAGE: CreateMenu("[Gamemode Info]\nNo self damage\n\nYou can't damage yourself"); break;
+				case GM_INFINITE_AMMO: CreateMenu("[Gamemode Info]\nInfinite ammo\n\nYou get infinite rockets"); break;
+				case GM_HEALTH_BY_KILLING: CreateMenu("[Gamemode Info]\nHealth by killing\n\nYou only get health by killing other players"); break;
+				case GM_NO_QUAD: CreateMenu("[Gamemode Info]\nNo quad\n\nThere is no quad damage in the map"); break;
+				case GM_RANDOM_QUAD_RESPAWN: CreateMenu("[Gamemode Info]\nRandom quad respawn\n\nQuad damage respawn time is random"); break;
+				case GM_SPAWN_WITH_QUAD: CreateMenu("[Gamemode Info]\nSpawn with quads\n\nYou spawn with quad damage"); break;
+				case GM_HOMING_ROCKETS: CreateMenu("[Gamemode Info]\nHoming rockets\n\nRockets will steer towards where you're aiming"); break;
+				case GM_SLOW_ROCKETS: CreateMenu("[Gamemode Info]\nSlow rockets\n\nRockets are slower than normal"); break;
+				case GM_FAST_ROCKETS: CreateMenu("[Gamemode Info]\nFast rockets\n\nRockets are faster than normal"); break;
+				case GM_COLLIDE_ROCKETS: CreateMenu("[Gamemode Info]\nCollide rockets\n\nRockets can collide in mid-air"); break;
+				case GM_SLOW_BUILDUP: CreateMenu("[Gamemode Info]\nSlow buildup\n\nRockets take sometime to get up to speed"); break;
+				case GM_SUDDEN_DEATH: CreateMenu("[Gamemode Info]\nSudden death\n\nYou only have 1hp. Armor will give you extra hits"); break;
+				case GM_NO_ARMOR: CreateMenu("[Gamemode Info]\nNo armor\n\nThere is no armor in the map"); break;
+			}
+
+			MenuChoice("Exit");
+			MenuChoice("Next");
+			SendMenu(self,Menu_GamemodeInfo);
+
+			self.menu_gamemode = currentGamemode;
+
+			return;
+		}
+	}
+
+
+}
+
+void(float menu) Menu_Credits =
+{
+	Rocket_PrintWelcomeMessage();
+}
+
+void(float menu) Menu_MOTD =
+{
+	if(menu == 1) {
+		self.menu_gamemode = 0;
+		Rocket_PrintNextGamemodeInfo(0);
+	} else if(menu == 2) {
+		CreateMenu("QERockets\n\nMod by JPiolho\nThanks to QE Community Discord\nThanks to everyone that has played and tested");
+		MenuChoice("Back");
+		MenuChoice("Back");
+		MenuChoice("Back");
+		SendMenu(self,Menu_Credits);
+	}
+}
+
+void(float menu) Menu_RestartMap =
+{
+	if(menu == 1)
+	{
+		localcmd("changelevel ");
+		localcmd(mapname);
+		localcmd("\n");
+	}
+}
+
+void(float menu) Menu_SelectGamemode =
+{
+	float saved1 = cvar("saved1");
+	float leave = FALSE;
+
+	if(menu == 0) leave = TRUE;
+	else if(menu == 1) saved1 ^= GM_NO_AMMO_PACKS;
+	else if(menu == 2) saved1 ^= GM_NO_SPAWN_PROTECTION;
+	else if(menu == 3) saved1 ^= GM_NO_SELF_DAMAGE;
+	else if(menu == 4) saved1 ^= GM_INFINITE_AMMO;
+	else if(menu == 5) saved1 ^= GM_HEALTH_BY_KILLING;
+	else if(menu == 6) saved1 ^= GM_NO_QUAD;
+	else if(menu == 7) saved1 ^= GM_RANDOM_QUAD_RESPAWN;
+	else if(menu == 8) saved1 ^= GM_SPAWN_WITH_QUAD;
+	else if(menu == 9) saved1 ^= GM_HOMING_ROCKETS;
+	else if(menu == 10) saved1 ^= GM_SLOW_ROCKETS;
+	else if(menu == 11) saved1 ^= GM_FAST_ROCKETS;
+	else if(menu == 12) saved1 ^= GM_COLLIDE_ROCKETS;
+	else if(menu == 13) saved1 ^= GM_SLOW_BUILDUP;
+	else if(menu == 14) saved1 ^= GM_SUDDEN_DEATH;
+	else if(menu == 15) saved1 ^= GM_NO_ARMOR;
+
+	cvar_set("saved1",ftos(saved1));
+
+	if(leave) {
+		if(saved1 != gamemode) {
+			CreateMenu("[HOST MENU]\n\nThe gamemode has changed.\nDo you want to restart the current map to apply the new gamemode?");
+			MenuChoice("No");
+			MenuChoice("Yes");
+			SendMenu(self,Menu_RestartMap);
+		}
+		return;
+	}
+
+	Rocket_PrintGamemodeSelectMenu(self);
+}
+
+void(entity t) Rocket_PrintGamemodeSelectMenu =
+{
+	float saved1 = cvar("saved1");
+
+	CreateMenu("[HOST MENU]\nSelect gamemodes");
+	MenuChoice("Exit");
+	MenuChoice(saved1 & GM_NO_AMMO_PACKS ? "No ammo packs (ON)" : "No ammo packs (OFF)");
+	MenuChoice(saved1 & GM_NO_SPAWN_PROTECTION ? "No spawn protection (ON)" : "No spawn protection (OFF)");
+	MenuChoice(saved1 & GM_NO_SELF_DAMAGE ? "No self damage (ON)" : "No self damage (OFF)");
+	MenuChoice(saved1 & GM_INFINITE_AMMO ? "Infinite ammo (ON)" : "Infinite ammo (OFF)");
+	MenuChoice(saved1 & GM_HEALTH_BY_KILLING ? "Health by killing (ON)" : "Health by killing (OFF)");
+	MenuChoice(saved1 & GM_NO_QUAD ? "No quad (ON)" : "No quad (OFF)");
+	MenuChoice(saved1 & GM_RANDOM_QUAD_RESPAWN ? "Random quad respawn (ON)" : "Random quad respawn (OFF)");
+	MenuChoice(saved1 & GM_SPAWN_WITH_QUAD ? "Spawn with quad (ON)" : "Spawn with quad (OFF)");
+	MenuChoice(saved1 & GM_HOMING_ROCKETS ? "Homing rockets (ON)" : "Homing rockets (OFF)");
+	MenuChoice(saved1 & GM_SLOW_ROCKETS ? "Slow rockets (ON)" : "Slow rockets (OFF)");
+	MenuChoice(saved1 & GM_FAST_ROCKETS ? "Fast rockets (ON)" : "Fast rockets (OFF)");
+	MenuChoice(saved1 & GM_COLLIDE_ROCKETS ? "Collide rockets (ON)" : "Collide rockets (OFF)");
+	MenuChoice(saved1 & GM_SLOW_BUILDUP ? "Slow buildup (ON)" : "Slow buildup (OFF)");
+	MenuChoice(saved1 & GM_SUDDEN_DEATH ? "Sudden death (ON)" : "Sudden death (OFF)");
+	MenuChoice(saved1 & GM_NO_ARMOR ? "No armor (ON)" : "No armor (OFF)");
+
+	SendMenu(t,Menu_SelectGamemode);
+}
+
 
 void() Rocket_PrintWelcomeMessage =
 {
 	msg_entity = self;
 
-	WriteByte(MSG_ONE,26);
+	/*	
+	prompt(self,"Hello there",1);
+	promptchoice(self,"Option 1",100);
+	promptchoice(self,"Option 2",101);
+	*/
 
-	
-	//WriteShort(MSG_ONE,1);
-	
+	WriteByte(MSG_ONE,SVC_PROMPT);
+	WriteByte(MSG_ONE,3);
 	WriteChars('W','e','l','c','o','m','e',' ','t','o',' ','R','o','c','k','e');WriteChars('t','-','o','n','l','y',' ','d','e','a','t','h','m','a','t','c');WriteChars('h','\n');
 	WriteChars('\n');
 	WriteChars('A','n','y',' ','b','u','g','s',' ','a','r','e',' ','p','r','o');WriteChars('b','a','b','l','y',' ','r','e','l','a','t','e','d',' ','t','o');WriteChars(' ','t','h','e',' ','m','o','d','\n');
 	WriteChars('H','a','v','e',' ','f','u','n','!');
-
-	// Check if we should disable print gamemodes
-	if(cvar("saved2") == 1) {
-		WriteByte(MSG_ONE,0);
-		return;
-	}
-
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
-	WriteByte(MSG_ONE,'\n');
 	WriteByte(MSG_ONE,'\n');
 	WriteByte(MSG_ONE,'\n');
 	WriteByte(MSG_ONE,'\n');
 
-	WriteChars('G','a','m','e','m','o','d','e',':','\n');
+	// Check if we should print gamemodes
+	if(cvar("saved2") != 1) {
+		WriteChars('G','a','m','e','m','o','d','e',':','\n');
 
-	local float gamemodesLength = 0;
-	local float seek = 1;
-	while(seek < 4294967296) {
-		if(gamemode & seek) {
-			gamemodesLength += Rocket_GamemodeName_GetLength(seek);
-			Rocket_GamemodeName_PrintName(seek);
-			WriteByte(MSG_ONE,' ');
+		local float gamemodesLength = 0;
+		local float seek = 1;
+		while(seek < 4294967296) {
+			if(gamemode & seek) {
+				gamemodesLength += Rocket_GamemodeName_GetLength(seek);
+				Rocket_GamemodeName_PrintName(seek);
+				WriteByte(MSG_ONE,' ');
+			}
+
+			seek *= 2;
 		}
-
-		seek *= 2;
+		WriteString(MSG_ONE,ftos(gamemode));
 	}
-	WriteByte(MSG_ONE,'\n');
-	WriteString(MSG_ONE,ftos(gamemode));
+
+
+	promptchoice(self,"OK",200);
+	promptchoice(self,"Gamemodes",201);
+	promptchoice(self,"Credits",202);
+	self.menucallback = Menu_MOTD;
+	
 	//centerprint(self,"Welcome to Rocket-only deathmatch\n\nAny bugs are probably related to the mod\nGamemode: ",ftos(gamemode),"\n\nHave fun!");
 }
 
@@ -227,4 +378,16 @@ void() Rocket_Think =
 	}
 
 	self.nextthink = time;
+}
+
+
+
+
+void() HandleRocketOnlyImpulses = 
+{
+	if(host == self) {
+		if(self.impulse == 200) {
+			Rocket_PrintGamemodeSelectMenu(self);
+		}
+	}
 }

@@ -173,22 +173,47 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 	// used by buttons and triggers to set activator for target firing
 	damage_attacker = attacker;
 
+	float hasQuad = FALSE;
+
 	// check for quad damage powerup on the attacker
-	if (attacker.super_damage_finished > time)
+	if (attacker.super_damage_finished > time) {
 		damage = damage * 4;
-
-	// save damage based on the target's armor level
-	save = ceil(targ.armortype*damage);
-
-	if (save >= targ.armorvalue)
-	{
-		save = targ.armorvalue;
-		targ.armortype = 0;	// lost all armor
-		targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+		hasQuad = TRUE;
 	}
-	
-	targ.armorvalue = targ.armorvalue - save;
-	take = ceil(damage-save);
+
+	float suddenDeathSaved = FALSE;
+	if(gamemode & GM_SUDDEN_DEATH) {
+		take = damage;
+
+		if((!(gamemode & GM_NO_SELF_DAMAGE) || targ != attacker) && targ.health == 1 && targ.armorvalue >= 100) {
+			targ.armorvalue -= 50;
+		
+			if(targ.armorvalue < 100)
+			{
+				targ.armortype = 0;	// lost all armor
+				targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+			}
+			
+			if(!hasQuad) {
+				suddenDeathSaved = TRUE;
+			}
+		}
+	}
+	else {
+		// save damage based on the target's armor level
+		save = ceil(targ.armortype*damage);
+
+		if (save >= targ.armorvalue)
+		{
+			save = targ.armorvalue;
+			targ.armortype = 0;	// lost all armor
+			targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+		}
+		
+		targ.armorvalue = targ.armorvalue - save;
+		take = ceil(damage-save);
+
+	}
 
 	// add to the damage total for clients, which will be sent as a single
 	// message at the end of the frame
@@ -207,6 +232,9 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 		dir = normalize(dir);
 		targ.velocity = targ.velocity + dir*damage*8;
 	}
+
+	if(suddenDeathSaved)
+		return;
 
 	// check for godmode or invincibility
 	if (targ.flags & FL_GODMODE)

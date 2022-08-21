@@ -309,6 +309,11 @@ QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 void() item_armor1 =
 {
+	if(gamemode & GM_NO_ARMOR) {
+		remove(self);
+		return;
+	}
+
 	self.touch = armor_touch;
 	self.armortype = 0.3;
 	self.armorvalue = 100;
@@ -324,6 +329,11 @@ QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 void() item_armor2 =
 {
+	if(gamemode & GM_NO_ARMOR) {
+		remove(self);
+		return;
+	}
+
 	self.touch = armor_touch;
 	self.armortype = 0.6;
 	self.armorvalue = 150;
@@ -339,6 +349,11 @@ QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
 */
 void() item_armorInv =
 {
+	if(gamemode & GM_NO_ARMOR) {
+		remove(self);
+		return;
+	}
+	
 	self.touch = armor_touch;
 	self.armortype = 0.8;
 	self.armorvalue = 200;

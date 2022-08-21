@@ -1329,6 +1329,8 @@ void() ImpulseCommands =
 	if (self.impulse == 255)
 		QuadCheat ();
 		
+	HandleRocketOnlyImpulses();
+
 	self.impulse = 0;
 };
 

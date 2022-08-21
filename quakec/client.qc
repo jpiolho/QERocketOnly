@@ -822,6 +822,12 @@ void() PutClientInServer =
 		self.super_damage_finished = time + 30;
 	}
 
+	if(gamemode & GM_SUDDEN_DEATH) {
+		self.health = 1;
+		self.max_health = 1;
+	}
+
+
 	if (deathmatch || coop)
 	{
 		makevectorsfixed(self.angles);
@@ -1511,6 +1517,9 @@ called when a player connects to a server
 */
 void() ClientConnect =
 {
+	if(!host)
+		host = self;
+
 	bprint("$qc_entered", self.netname);
 
 	// a client connecting during an intermission can cause problems

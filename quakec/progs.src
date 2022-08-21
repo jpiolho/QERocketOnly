@@ -5,6 +5,7 @@ subs.qc
 math.qc
 utils.qc
 maps.qc
+menusystem_defs.qc
 gamemodes.qc
 rocketonly.qc
 fight.qc
@@ -41,3 +42,5 @@ monsters/enforcer.qc	// registered
 monsters/shub.qc		// registered
 
 bots/bot.qc				// bot support
+
+menusystem.qc
