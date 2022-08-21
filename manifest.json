@@ -2,10 +2,10 @@
 	"manifestVersion": 1,
 	
 	"name": "QE Rocket-only",
-	"version": "1.3.0",
+	"version": "1.3.0a",
 	"author": "JPiolho",
 	"date": "21/08/2022",
-	"description": "Dynamically makes any Quake (id1) deathmatch map rocket-only. There are a few gamemode options you can choose from.\n\nActivate gamemodes by starting the game and typing \"impulse 200\" in the console.",
+	"description": "Dynamically makes any Quake (id1) deathmatch map rocket-only. There are a few gamemode options you can choose from.\n\nActivate gamemodes by starting the game and typing 'impulse 200' in the console.",
 	"gamedir": "id1",
 	"screenshots": [
 		"https://i.imgur.com/4tIM3O2.png",
