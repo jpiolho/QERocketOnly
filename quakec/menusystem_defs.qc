@@ -1,5 +1,5 @@
 #define MENU_IMPULSE_BASE 200
-#define MENU_MAX_OPTIONS 16
+#define MENU_MAX_OPTIONS 32
 
 .void(float menu) menucallback;
 

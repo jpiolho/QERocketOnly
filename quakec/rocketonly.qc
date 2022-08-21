@@ -8,6 +8,8 @@ entity host;
 
 .float menu_gamemode;
 
+void respawn();
+
 float(float gm) Rocket_GamemodeName_GetLength =
 {
 	switch(gm)
@@ -27,6 +29,7 @@ float(float gm) Rocket_GamemodeName_GetLength =
 		case GM_SPAWN_WITH_QUAD: return 3;
 		case GM_SUDDEN_DEATH: return 2;
 		case GM_NO_ARMOR: return 2;
+		case GM_DARKNESS: return 4;
 		default: return 0;
 	}
 }
@@ -97,9 +100,15 @@ void(float gm) Rocket_GamemodeName_PrintName =
 			WriteByte(MSG_ONE,'S');
 			WriteByte(MSG_ONE,'D');
 			break;
-		case GM_SUDDEN_DEATH:
+		case GM_NO_ARMOR:
 			WriteByte(MSG_ONE,'N');
 			WriteByte(MSG_ONE,'A');
+			break;
+		case GM_DARKNESS:
+			WriteByte(MSG_ONE,'D');
+			WriteByte(MSG_ONE,'A');
+			WriteByte(MSG_ONE,'R');
+			WriteByte(MSG_ONE,'K');
 			break;
 	}
 }
@@ -139,8 +148,9 @@ void(float currentGamemode) Rocket_PrintNextGamemodeInfo =
 				case GM_FAST_ROCKETS: CreateMenu("[Gamemode Info]\nFast rockets\n\nRockets are faster than normal"); break;
 				case GM_COLLIDE_ROCKETS: CreateMenu("[Gamemode Info]\nCollide rockets\n\nRockets can collide in mid-air"); break;
 				case GM_SLOW_BUILDUP: CreateMenu("[Gamemode Info]\nSlow buildup\n\nRockets take sometime to get up to speed"); break;
-				case GM_SUDDEN_DEATH: CreateMenu("[Gamemode Info]\nSudden death\n\nYou only have 1hp. Armor will give you extra hits"); break;
+				case GM_SUDDEN_DEATH: CreateMenu("[Gamemode Info]\nSudden death\n\nYou only have 1hp. Armor will give you extra hits\n100a (Green): 1 hit\n150a (Yellow): 2 hits\n200a (Red): 3 hits"); break;
 				case GM_NO_ARMOR: CreateMenu("[Gamemode Info]\nNo armor\n\nThere is no armor in the map"); break;
+				case GM_DARKNESS: CreateMenu("[Gamemode Info]\nDarkness\n\nThe map is in complete darkness for the most part"); break;
 			}
 
 			MenuChoice("Exit");
@@ -153,6 +163,7 @@ void(float currentGamemode) Rocket_PrintNextGamemodeInfo =
 		}
 	}
 
+	Rocket_PrintWelcomeMessage();
 
 }
 
@@ -161,9 +172,14 @@ void(float menu) Menu_Credits =
 	Rocket_PrintWelcomeMessage();
 }
 
+
 void(float menu) Menu_MOTD =
 {
-	if(menu == 1) {
+	if(menu == 0) {
+		self.observer = FALSE;
+		respawn();
+	}
+	else if(menu == 1) {
 		self.menu_gamemode = 0;
 		Rocket_PrintNextGamemodeInfo(0);
 	} else if(menu == 2) {
@@ -206,6 +222,7 @@ void(float menu) Menu_SelectGamemode =
 	else if(menu == 13) saved1 ^= GM_SLOW_BUILDUP;
 	else if(menu == 14) saved1 ^= GM_SUDDEN_DEATH;
 	else if(menu == 15) saved1 ^= GM_NO_ARMOR;
+	else if(menu == 16) saved1 ^= GM_DARKNESS;
 
 	cvar_set("saved1",ftos(saved1));
 
@@ -243,6 +260,7 @@ void(entity t) Rocket_PrintGamemodeSelectMenu =
 	MenuChoice(saved1 & GM_SLOW_BUILDUP ? "Slow buildup (ON)" : "Slow buildup (OFF)");
 	MenuChoice(saved1 & GM_SUDDEN_DEATH ? "Sudden death (ON)" : "Sudden death (OFF)");
 	MenuChoice(saved1 & GM_NO_ARMOR ? "No armor (ON)" : "No armor (OFF)");
+	MenuChoice(saved1 & GM_DARKNESS ? "Darkness (ON)" : "Darkness (OFF)");
 
 	SendMenu(t,Menu_SelectGamemode);
 }
@@ -274,7 +292,7 @@ void() Rocket_PrintWelcomeMessage =
 
 		local float gamemodesLength = 0;
 		local float seek = 1;
-		while(seek < 4294967296) {
+		while(seek <= GM__END__) {
 			if(gamemode & seek) {
 				gamemodesLength += Rocket_GamemodeName_GetLength(seek);
 				Rocket_GamemodeName_PrintName(seek);

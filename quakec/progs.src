@@ -5,6 +5,7 @@ subs.qc
 math.qc
 utils.qc
 maps.qc
+observer.qc
 menusystem_defs.qc
 gamemodes.qc
 rocketonly.qc

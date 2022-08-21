@@ -28,7 +28,7 @@ __wrap void() ImpulseCommands = {
 
     // Handle menu callbacks
     if(self.menucallback != __NULL__) {
-        if(self.impulse >= MENU_IMPULSE_BASE && self.impulse < (MENU_IMPULSE_BASE + 16)) {
+        if(self.impulse >= MENU_IMPULSE_BASE && self.impulse < (MENU_IMPULSE_BASE + MENU_MAX_OPTIONS)) {
             void(float menu) callback = self.menucallback;
             self.menucallback = __NULL__;
             callback(self.impulse - MENU_IMPULSE_BASE);

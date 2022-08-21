@@ -15,4 +15,5 @@ float GM_COLLIDE_ROCKETS          = 2048;
 float GM_SLOW_BUILDUP             = 4096;
 float GM_SUDDEN_DEATH             = 8192;
 float GM_NO_ARMOR                 = 16384;
-float GM__END__                   = GM_NO_ARMOR;
+float GM_DARKNESS                 = 32768;
+float GM__END__                   = GM_DARKNESS;

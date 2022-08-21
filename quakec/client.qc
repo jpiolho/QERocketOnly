@@ -798,6 +798,14 @@ void() PutClientInServer =
 	
 	player_stand1 ();
 
+	if(gamemode & GM_DARKNESS) {
+		lightstyle(0,"a");
+	}
+
+	if (self.observer) {
+		BecomeObserver(self);
+		return;
+	}
 
 	/*
 	 * Rocket-only mod
@@ -827,6 +835,7 @@ void() PutClientInServer =
 		self.max_health = 1;
 	}
 
+	W_ChangeWeapon();
 
 	if (deathmatch || coop)
 	{
@@ -1243,6 +1252,10 @@ void() PlayerPreThink =
 		PlayerDeathThink ();
 		return;
 	}
+
+	if (self.observer) {
+		return;
+	}
 	
 	if (self.deadflag == DEAD_DYING)
 		return;	// dying, so do nothing
@@ -1519,6 +1532,9 @@ void() ClientConnect =
 {
 	if(!host)
 		host = self;
+
+	if(!(self.flags & FL_ISBOT))
+		self.observer = TRUE;
 
 	bprint("$qc_entered", self.netname);
 
