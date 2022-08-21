@@ -1,4 +1,4 @@
-enumflags int
+enumflags
 {
     ROFL_SEEN_START_MESSAGE,
     ROFL_SPAWNED_INVULNERABILITY,
