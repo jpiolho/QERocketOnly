@@ -22,11 +22,16 @@ There are a few gamemode options you can choose from but here's the default feat
 When you change to mpmod, it sets the root folder to be Saved Games, so next time the game goes into id1 it will use the files from Saved Games and override.
 
 ## How to set gamemodes
+1. Start the game
+2. Open console and type "impulse 200"
+3. Use the menu to activate or deactivate gameflags.
+
+**Alternatively:**
 1. Open console and set the variable 'saved1' to the value you want.
 2. Restart map
 
 ## Game modes
-You can activate multiple gamemodes by adding the values together. (eg: 1+2 = 3)
+You can activate multiple gamemodes by adding the values together or using the in-game menu. (See previous section)
 
 ### 1: No ammo packs
    There will be no ammo pickups in the map. All ammo will be derived from backpacks that players drop.
@@ -67,6 +72,15 @@ You can activate multiple gamemodes by adding the values together. (eg: 1+2 = 3)
    
 ### 4096: Slow buildup
    Rockets start slow when launched, gradually increasing to maximum speed.
+
+### 8192: Sudden death
+   Players only have 1hp. Armor will give them extra hits.
+
+### 16384: No armor
+   Remove armor pickups from the map.
+	
+### 32768: Darkness
+   The normal lighting of the map will be complete darkness.
 
 ## Server options
 Server options are set via `saved2` cvar. You can activate multiple server options by adding the values together (eg: 1+2 = 3)
