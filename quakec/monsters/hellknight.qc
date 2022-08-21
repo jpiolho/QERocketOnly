@@ -1,3 +1,22 @@
+/*  Copyright (C) 1996-2022 id Software LLC
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+    See file, 'COPYING', for details.
+*/
+
 /*
 ==============================================================================
 
@@ -43,10 +62,10 @@ $frame slice1 slice2 slice3 slice4 slice5 slice6 slice7 slice8 slice9 slice10
 $frame smash1 smash2 smash3 smash4 smash5 smash6 smash7 smash8 smash9 smash10
 $frame smash11
 
-$frame w_attack1 w_attack2 w_attack3 w_attack4 w_attack5 w_attack6 w_attack7
+$frame w_attack1 w_attack2 w_attack3 w_attack4 w_attack5 w_attack6 w_attack7 
 $frame w_attack8 w_attack9 w_attack10 w_attack11 w_attack12 w_attack13 w_attack14
-$frame w_attack15 w_attack16 w_attack17 w_attack18 w_attack19 w_attack20
-$frame w_attack21 w_attack22
+$frame w_attack15 w_attack16 w_attack17 w_attack18 w_attack19 w_attack20 
+$frame w_attack21 w_attack22 
 
 $frame magicc1 magicc2 magicc3 magicc4 magicc5 magicc6 magicc7 magicc8
 $frame magicc9 magicc10 magicc11
@@ -60,42 +79,47 @@ void(float offset) hknight_shot =
 {
 	local	vector	offang;
 	local	vector	org, vec;
-
+	
 	offang = vectoangles (self.enemy.origin - self.origin);
 	offang_y = offang_y + offset * 6;
-
+	
 	makevectors (offang);
 
 	org = self.origin + self.mins + self.size*0.5 + v_forward * 20;
 
-// set missile speed
+	// set missile speed
 	vec = normalize (v_forward);
 	vec_z = 0 - vec_z + (random() - 0.5)*0.1;
-
+	
 	launch_spike (org, vec);
-	newmis.classname = "knightspike";
+	newmis.classname = "knight_spike";
 	setmodel (newmis, "progs/k_spike.mdl");
-	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
+	setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);		
 	newmis.velocity = vec*300;
+	if (cvar("pr_checkextension"))
+		if (checkextension("EX_EXTENDED_EF"))
+			newmis.effects = newmis.effects | EF_CANDLELIGHT; // give the projectiles a weak glow
 	sound (self, CHAN_WEAPON, "hknight/attack1.wav", 1, ATTN_NORM);
 };
 
 void() CheckForCharge =
 {
-// check for mad charge
-if (!enemy_vis)
-	return;
-if (time < self.attack_finished)
-	return;
-if ( fabs(self.origin_z - self.enemy.origin_z) > 20)
-	return;		// too much height change
-if ( vlen (self.origin - self.enemy.origin) < 80)
-	return;		// use regular attack
+	// check for mad charge
+	if (!enemy_visible)
+		return;
 
-// charge
+	if (time < self.attack_finished)
+		return;	
+
+	if ( fabs(self.origin_z - self.enemy.origin_z) > 20)
+		return;		// too much height change
+
+	if ( vlen (self.origin - self.enemy.origin) < 80)
+		return;		// use regular attack
+
+	// charge		
 	SUB_AttackFinished (2);
 	hknight_char_a1 ();
-
 };
 
 void() CheckContinueCharge =
@@ -106,6 +130,7 @@ void() CheckContinueCharge =
 		hknight_run1 ();
 		return;		// done charging
 	}
+
 	if (random() > 0.5)
 		sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
 	else
@@ -127,8 +152,10 @@ void()	hknight_stand9	=[	$stand9,	hknight_stand1	] {ai_stand();};
 //===========================================================================
 
 void()	hknight_walk1	=[	$walk1,		hknight_walk2	] {
-hk_idle_sound();
-ai_walk(2);};
+	hk_idle_sound();
+	ai_walk(2);
+};
+
 void()	hknight_walk2	=[	$walk2,		hknight_walk3	] {ai_walk(5);};
 void()	hknight_walk3	=[	$walk3,		hknight_walk4	] {ai_walk(5);};
 void()	hknight_walk4	=[	$walk4,		hknight_walk5	] {ai_walk(4);};
@@ -152,8 +179,11 @@ void()	hknight_walk20	=[	$walk20,	hknight_walk1	] {ai_walk(2);};
 //===========================================================================
 
 void()	hknight_run1	=[	$run1,		hknight_run2	] {
-hk_idle_sound();
-ai_run (20); CheckForCharge (); };
+	hk_idle_sound();
+	ai_run (20); 
+	CheckForCharge (); 
+};
+
 void()	hknight_run2	=[	$run2,		hknight_run3	] {ai_run(25);};
 void()	hknight_run3	=[	$run3,		hknight_run4	] {ai_run(18);};
 void()	hknight_run4	=[	$run4,		hknight_run5	] {ai_run(16);};
@@ -164,7 +194,10 @@ void()	hknight_run8	=[	$run8,		hknight_run1	] {ai_run(13);};
 
 //============================================================================
 
-void()	hknight_pain1	=[	$pain1,		hknight_pain2	] {sound (self, CHAN_VOICE, "hknight/pain1.wav", 1, ATTN_NORM);};
+void()	hknight_pain1	=[	$pain1,		hknight_pain2	] {
+	sound (self, CHAN_VOICE, "hknight/pain1.wav", 1, ATTN_NORM);
+};
+
 void()	hknight_pain2	=[	$pain2,		hknight_pain3	] {};
 void()	hknight_pain3	=[	$pain3,		hknight_pain4	] {};
 void()	hknight_pain4	=[	$pain4,		hknight_pain5	] {};
@@ -174,8 +207,11 @@ void()	hknight_pain5	=[	$pain5,		hknight_run1	] {};
 
 void()	hknight_die1	=[	$death1,	hknight_die2	] {ai_forward(10);};
 void()	hknight_die2	=[	$death2,	hknight_die3	] {ai_forward(8);};
-void()	hknight_die3	=[	$death3,	hknight_die4	]
-{self.solid = SOLID_NOT; ai_forward(7);};
+void()	hknight_die3	=[	$death3,	hknight_die4	] {
+	self.solid = SOLID_NOT;
+	ai_forward(7);
+};
+
 void()	hknight_die4	=[	$death4,	hknight_die5	] {};
 void()	hknight_die5	=[	$death5,	hknight_die6	] {};
 void()	hknight_die6	=[	$death6,	hknight_die7	] {};
@@ -188,8 +224,7 @@ void()	hknight_die12	=[	$death12,	hknight_die12	] {};
 
 void()	hknight_dieb1	=[	$deathb1,	hknight_dieb2	] {};
 void()	hknight_dieb2	=[	$deathb2,	hknight_dieb3	] {};
-void()	hknight_dieb3	=[	$deathb3,	hknight_dieb4	]
-{self.solid = SOLID_NOT;};
+void()	hknight_dieb3	=[	$deathb3,	hknight_dieb4	] {self.solid = SOLID_NOT;};
 void()	hknight_dieb4	=[	$deathb4,	hknight_dieb5	] {};
 void()	hknight_dieb5	=[	$deathb5,	hknight_dieb6	] {};
 void()	hknight_dieb6	=[	$deathb6,	hknight_dieb7	] {};
@@ -199,7 +234,7 @@ void()	hknight_dieb9	=[	$deathb9,	hknight_dieb9	] {};
 
 void() hknight_die =
 {
-// check for gib
+	// check for gib
 	if (self.health < -40)
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
@@ -210,8 +245,9 @@ void() hknight_die =
 		return;
 	}
 
-// regular death
+	// regular death
 	sound (self, CHAN_VOICE, "hknight/death1.wav", 1, ATTN_NORM);
+
 	if (random() > 0.5)
 		hknight_die1 ();
 	else
@@ -287,8 +323,12 @@ void()	hknight_char_a16=[	$char_a16,	hknight_run1	] {ai_charge(13);};
 
 //===========================================================================
 
-void()	hknight_char_b1	=[	$char_b1,	hknight_char_b2	]
-{CheckContinueCharge (); ai_charge(23); ai_melee();};
+void()	hknight_char_b1	=[	$char_b1,	hknight_char_b2	] {
+	CheckContinueCharge();
+	ai_charge(23);
+	ai_melee();
+};
+
 void()	hknight_char_b2	=[	$char_b2,	hknight_char_b3	] {ai_charge(17); ai_melee();};
 void()	hknight_char_b3	=[	$char_b3,	hknight_char_b4	] {ai_charge(12); ai_melee();};
 void()	hknight_char_b4	=[	$char_b4,	hknight_char_b5	] {ai_charge(22); ai_melee();};
@@ -363,12 +403,12 @@ void(entity attacker, float damage)	hknight_pain =
 	sound (self, CHAN_VOICE, "hknight/pain1.wav", 1, ATTN_NORM);
 
 	if (time - self.pain_finished > 5)
-	{	// allways go into pain frame if it has been a while
+	{	// always go into pain frame if it has been a while
 		hknight_pain1 ();
 		self.pain_finished = time + 1;
 		return;
 	}
-
+	
 	if ((random()*30 > damage) )
 		return;		// didn't flinch
 
@@ -394,8 +434,7 @@ void() hknight_melee =
 	}
 };
 
-/*QUAKED monster_hell_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
-*/
+/*QUAKED monster_hell_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush*/
 void() monster_hell_knight =
 {
 	if (deathmatch)
@@ -403,11 +442,12 @@ void() monster_hell_knight =
 		remove(self);
 		return;
 	}
+
 	precache_model2 ("progs/hknight.mdl");
 	precache_model2 ("progs/k_spike.mdl");
 	precache_model2 ("progs/h_hellkn.mdl");
 
-
+	
 	precache_sound2 ("hknight/attack1.wav");
 	precache_sound2 ("hknight/death1.wav");
 	precache_sound2 ("hknight/pain1.wav");
@@ -419,14 +459,19 @@ void() monster_hell_knight =
 
 	precache_sound ("knight/sword1.wav");
 	precache_sound ("knight/sword2.wav");
-
+	
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
 	setmodel (self, "progs/hknight.mdl");
 
+	self.noise = "hknight/sight1.wav";
+	self.netname = "$qc_death_knight";
+	self.killstring = "$qc_ks_deathknight";
+
 	setsize (self, '-16 -16 -24', '16 16 40');
 	self.health = 250;
+	self.max_health = 250;
 
 	self.th_stand = hknight_stand1;
 	self.th_walk = hknight_walk1;
@@ -435,6 +480,8 @@ void() monster_hell_knight =
 	self.th_missile = hknight_magicc1;
 	self.th_pain = hknight_pain;
 	self.th_die = hknight_die;
-
+	self.allowPathFind = TRUE;
+	self.combat_style = CS_MIXED;
+	
 	walkmonster_start ();
 };

@@ -1,3 +1,22 @@
+/*  Copyright (C) 1996-2022 id Software LLC
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+    See file, 'COPYING', for details.
+*/
+
 /*
 ==============================================================================
 
@@ -14,7 +33,7 @@ $scale 0.7
 $frame attack1 attack2 attack3 attack4 attack5 attack6 attack7 attack8
 $frame attack9 attack10 attack11
 
-$frame pain1 pain2 pain3 pain4 pain5
+$frame pain1 pain2 pain3 pain4 pain5 
 
 $frame death1 death2 death3 death4 death5 death6 death7
 
@@ -26,9 +45,12 @@ void() ShalMissile;
 void() shal_stand     =[      $walk1,       shal_stand    ] {ai_stand();};
 
 void() shal_walk1     =[      $walk2,       shal_walk2    ] {
-if (random() < 0.2)
-	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
-ai_walk(6);};
+	if (random() < 0.2)
+		sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
+
+	ai_walk(6);
+};
+
 void() shal_walk2     =[      $walk3,       shal_walk3    ] {ai_walk(4);};
 void() shal_walk3     =[      $walk4,       shal_walk4    ] {ai_walk(0);};
 void() shal_walk4     =[      $walk5,       shal_walk5    ] {ai_walk(0);};
@@ -42,9 +64,12 @@ void() shal_walk11    =[      $walk12,       shal_walk12    ] {ai_walk(4);};
 void() shal_walk12    =[      $walk1,       shal_walk1    ] {ai_walk(5);};
 
 void() shal_run1     =[      $walk2,       shal_run2    ] {
-if (random() < 0.2)
-	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
-ai_run(6);};
+	if (random() < 0.2)
+		sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
+
+	ai_run(6);
+};
+
 void() shal_run2     =[      $walk3,       shal_run3    ] {ai_run(4);};
 void() shal_run3     =[      $walk4,       shal_run4    ] {ai_run(0);};
 void() shal_run4     =[      $walk5,       shal_run5    ] {ai_run(0);};
@@ -58,9 +83,10 @@ void() shal_run11    =[      $walk12,       shal_run12    ] {ai_run(4);};
 void() shal_run12    =[      $walk1,       shal_run1    ] {ai_run(5);};
 
 void() shal_attack1     =[      $attack1,       shal_attack2    ] {
-sound (self, CHAN_VOICE, "shalrath/attack.wav", 1, ATTN_NORM);
-ai_face();
+	sound (self, CHAN_VOICE, "shalrath/attack.wav", 1, ATTN_NORM);
+	ai_face();
 };
+
 void() shal_attack2     =[      $attack2,       shal_attack3    ] {ai_face();};
 void() shal_attack3     =[      $attack3,       shal_attack4    ] {ai_face();};
 void() shal_attack4     =[      $attack4,       shal_attack5    ] {ai_face();};
@@ -99,7 +125,7 @@ void(entity attacker, float damage) shalrath_pain =
 
 void() shalrath_die =
 {
-// check for gib
+	// check for gib
 	if (self.health < -90)
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
@@ -132,6 +158,7 @@ void() ShalMissile =
 	dir = normalize((self.enemy.origin + '0 0 10') - self.origin);
 	dist = vlen (self.enemy.origin - self.origin);
 	flytime = dist * 0.002;
+
 	if (flytime < 0.1)
 		flytime = 0.1;
 
@@ -139,13 +166,14 @@ void() ShalMissile =
 	sound (self, CHAN_WEAPON, "shalrath/attack2.wav", 1, ATTN_NORM);
 
 	missile = spawn ();
+	missile.classname = "vore_ball";
 	missile.owner = self;
 
 	missile.solid = SOLID_BBOX;
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	setmodel (missile, "progs/v_spike.mdl");
 
-	setsize (missile, '0 0 0', '0 0 0');
+	setsize (missile, '0 0 0', '0 0 0');		
 
 	missile.origin = self.origin + '0 0 10';
 	missile.velocity = dir * 400;
@@ -160,18 +188,19 @@ void() ShalHome =
 {
 	local vector	dir, vtemp;
 	vtemp = self.enemy.origin + '0 0 10';
+
 	if (self.enemy.health < 1)
 	{
 		remove(self);
 		return;
 	}
+
 	dir = normalize(vtemp - self.origin);
-	if (skill == 3)
-		self.velocity = dir * 350;
-	else
-		self.velocity = dir * 250;
+
+	self.velocity = dir * 250;
+
 	self.nextthink = time + 0.2;
-	self.think = ShalHome;
+	self.think = ShalHome;	
 };
 
 void() ShalMissileTouch =
@@ -180,7 +209,8 @@ void() ShalMissileTouch =
 		return;		// don't explode on owner
 
 	if (other.classname == "monster_zombie")
-		T_Damage (other, self, self, 110);
+		T_Damage (other, self, self, 110);	
+
 	T_RadiusDamage (self, self.owner, 40, world);
 	sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
 
@@ -208,23 +238,30 @@ void() monster_shalrath =
 		remove(self);
 		return;
 	}
+
 	precache_model2 ("progs/shalrath.mdl");
 	precache_model2 ("progs/h_shal.mdl");
 	precache_model2 ("progs/v_spike.mdl");
-
+	
 	precache_sound2 ("shalrath/attack.wav");
 	precache_sound2 ("shalrath/attack2.wav");
 	precache_sound2 ("shalrath/death.wav");
 	precache_sound2 ("shalrath/idle.wav");
 	precache_sound2 ("shalrath/pain.wav");
 	precache_sound2 ("shalrath/sight.wav");
-
+	
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
-
+	
 	setmodel (self, "progs/shalrath.mdl");
+
+	self.noise = "shalrath/sight.wav";
+	self.netname = "$qc_vore";
+	self.killstring = "$qc_ks_vore";
+
 	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
 	self.health = 400;
+	self.max_health = 400;
 
 	self.th_stand = shal_stand;
 	self.th_walk = shal_walk1;
@@ -232,8 +269,10 @@ void() monster_shalrath =
 	self.th_die = shalrath_die;
 	self.th_pain = shalrath_pain;
 	self.th_missile = shal_attack1;
+	self.allowPathFind = TRUE;
+	self.combat_style = CS_RANGED;
 
 	self.think = walkmonster_start;
-	self.nextthink = time + 0.1 + random ()*0.1;
+	self.nextthink = time + 0.1 + random () * 0.1;	
 
 };

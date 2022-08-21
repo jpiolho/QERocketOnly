@@ -1,3 +1,22 @@
+/*  Copyright (C) 1996-2022 id Software LLC
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+    See file, 'COPYING', for details.
+*/
+
 /*
 ==============================================================================
 
@@ -15,19 +34,21 @@ void() finale_1;
 void() finale_2;
 void() finale_3;
 void() finale_4;
+void() finale_5;
+void() finale_6;
 
 
 entity	shub;
 
-$frame old1 old2 old3 old4 old5 old6 old7 old8 old9
-$frame old10 old11 old12 old13 old14 old15 old16 old17 old18 old19
-$frame old20 old21 old22 old23 old24 old25 old26 old27 old28 old29
-$frame old30 old31 old32 old33 old34 old35 old36 old37 old38 old39
-$frame old40 old41 old42 old43 old44 old45 old46
+$frame old1 old2 old3 old4 old5 old6 old7 old8 old9 
+$frame old10 old11 old12 old13 old14 old15 old16 old17 old18 old19 
+$frame old20 old21 old22 old23 old24 old25 old26 old27 old28 old29 
+$frame old30 old31 old32 old33 old34 old35 old36 old37 old38 old39 
+$frame old40 old41 old42 old43 old44 old45 old46 
 
 $frame shake1 shake2 shake3 shake4 shake5 shake6 shake7 shake8
-$frame shake9 shake10 shake11 shake12 shake13 shake14
-$frame shake15 shake16 shake17 shake18 shake19 shake20
+$frame shake9 shake10 shake11 shake12 shake13 shake14 shake15
+$frame shake16 shake17 shake18 shake19 shake20 shake21
 
 //void() old_stand     =[      $old1,       old_stand    ] {};
 
@@ -79,7 +100,7 @@ void() old_idle45       =[      $old45, old_idle46      ] {};
 void() old_idle46       =[      $old46, old_idle1       ] {};
 
 
-void() old_thrash1        =[ $shake1,  old_thrash2       ] {lightstyle(0, "m");};
+void() old_thrash1        =[      $shake1,  old_thrash2       ] {lightstyle(0, "m");};
 void() old_thrash2        =[      $shake2,  old_thrash3       ] {lightstyle(0, "k");};
 void() old_thrash3        =[      $shake3,  old_thrash4       ] {lightstyle(0, "k");};
 void() old_thrash4        =[      $shake4,  old_thrash5       ] {lightstyle(0, "i");};
@@ -93,11 +114,14 @@ void() old_thrash11       =[      $shake11, old_thrash12      ] {lightstyle(0, "
 void() old_thrash12       =[      $shake12, old_thrash13      ] {lightstyle(0, "i");};
 void() old_thrash13       =[      $shake13, old_thrash14      ] {lightstyle(0, "k");};
 void() old_thrash14       =[      $shake14, old_thrash15      ] {lightstyle(0, "m");};
-void() old_thrash15       =[      $shake15, old_thrash16      ] {lightstyle(0, "m");
-self.cnt = self.cnt + 1;
-if (self.cnt != 3)
-	self.think = old_thrash1;
+void() old_thrash15       =[      $shake15, old_thrash16      ] {
+	lightstyle(0, "m");
+	self.cnt = self.cnt + 1;
+
+	if (self.cnt != 3)
+		self.think = old_thrash1;
 };
+
 void() old_thrash16       =[      $shake16, old_thrash17      ] {lightstyle(0, "g");};
 void() old_thrash17       =[      $shake17, old_thrash18      ] {lightstyle(0, "c");};
 void() old_thrash18       =[      $shake18, old_thrash19      ] {lightstyle(0, "b");};
@@ -116,17 +140,21 @@ void() finale_1 =
 
 	// find the intermission spot
 	pos = find (world, classname, "info_intermission");
+
 	if (!pos)
 		error ("no info_intermission");
+
 	pl = find (world, classname, "misc_teleporttrain");
+
 	if (!pl)
 		error ("no teleporttrain");
 	remove (pl);
 
 	WriteByte (MSG_ALL, SVC_FINALE);
-	WriteString (MSG_ALL, "");
+	WriteString (MSG_ALL, string_null);
 
 	pl = find (world, classname, "player");
+
 	while (pl != world)
 	{
 		pl.view_ofs = '0 0 0';
@@ -140,15 +168,26 @@ void() finale_1 =
 		pl.modelindex = 0;
 		setorigin (pl, pos.origin);
 		pl = find (pl, classname, "player");
-	}
-
+	}	
+	
 	// make fake versions of all players as standins, and move the real
 	// players to the intermission spot
-
+	
 	// wait for 1 second
 	timer = spawn();
 	timer.nextthink = time + 1;
-	timer.think = finale_2;
+	timer.think = finale_2;	
+
+	if (campaign && world.model == "maps/end.bsp")
+	{
+		WriteByte (MSG_ALL, SVC_ACHIEVEMENT);
+		WriteString(MSG_ALL, "ACH_DEFEAT_SHUB");
+ 		if (skill == 3)
+ 		{
+	 		WriteByte (MSG_ALL, SVC_ACHIEVEMENT);
+	 		WriteString(MSG_ALL, "ACH_DEFEAT_SHUB_NIGHTMARE"); 			
+ 		}
+	}
 };
 
 void() finale_2 =
@@ -165,7 +204,7 @@ void() finale_2 =
 	WriteCoord (MSG_BROADCAST, o_z);
 
 	sound (shub, CHAN_VOICE, "misc/r_tele1.wav", 1, ATTN_NORM);
-
+	
 	self.nextthink = time + 2;
 	self.think = finale_3;
 };
@@ -175,19 +214,19 @@ void() finale_3 =
 	// start shub thrashing wildly
 	shub.think = old_thrash1;
 	sound (shub, CHAN_VOICE, "boss2/death.wav", 1, ATTN_NORM);
-	lightstyle(0, "abcdefghijklmlkjihgfedcb");
+	lightstyle(0, "abcdefghijklmlkjihgfedcb");	
 };
 
 void() finale_4 =
 {
-	// throw tons of meat chunks
+	// throw tons of meat chunks	
 	local	vector	oldo;
 	local	float	x, y, z;
 	local	float	r;
 	local entity	n;
 
 	sound (self, CHAN_VOICE, "boss2/pop2.wav", 1, ATTN_NORM);
-
+	
 	oldo = self.origin;
 
 	z = 16;
@@ -204,21 +243,26 @@ void() finale_4 =
 				self.origin_z = oldo_z + z;
 
 				r = random();
-				if (r < 0.3)
+
+				if (r < 0.3)				
 					ThrowGib ("progs/gib1.mdl", -999);
 				else if (r < 0.6)
 					ThrowGib ("progs/gib2.mdl", -999);
 				else
 					ThrowGib ("progs/gib3.mdl", -999);
+
 				y = y + 32;
 			}
+
 			x = x + 32;
 		}
+
 		z = z + 96;
 	}
+
 	// start the end text
 	WriteByte (MSG_ALL, SVC_FINALE);
-	WriteString (MSG_ALL, "Congratulations and well done! You have\nbeaten the hideous Shub-Niggurath, and\nher hundreds of ugly changelings and\nmonsters. You have proven that your\nskill and your cunning are greater than\nall the powers of Quake. You are the\nmaster now. Id Software salutes you.");
+	WriteString (MSG_ALL, "$qc_finale_end");
 
 // put a player model down
 	n = spawn();
@@ -235,14 +279,32 @@ void() finale_4 =
 	WriteByte (MSG_ALL, 3);
 	WriteByte (MSG_ALL, 3);
 	lightstyle(0, "m");
+	
+	// instead of sitting here forever, run the quake ex credits and send the user back to start
+	local entity timer = spawn();
+	timer.nextthink = time + 1;
+	timer.think = finale_5;	
 };
 
-//============================================================================
-
-void (entity attacker, float damage) nopain =
+void() finale_5 =
 {
-	self.health = 40000;
-};
+	if (finaleFinished()) {
+		self.nextthink = time + 5;
+		self.think = finale_6;
+	} else {
+		self.nextthink = time + 0.1;
+	}
+}
+
+void() finale_6 = 
+{
+	if (!coop) {
+		localcmd("menu_credits\n");
+		localcmd("disconnect\n");
+	} else {
+		changelevel("start");
+	}
+}
 
 //============================================================================
 
@@ -266,18 +328,22 @@ void() monster_oldone =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
-
+	
 	setmodel (self, "progs/oldone.mdl");
+	self.netname = "$qc_shub";
+	self.killstring = "$qc_ks_shub";
+
 	setsize (self, '-160 -128 -24', '160 128 256');
 
 	self.health = 40000;		// kill by telefrag
+	self.max_health = 40000;	// kill by telefrag
 	self.think = old_idle1;
-	self.nextthink = time + 0.1;
+	self.nextthink = time + 0.1;	
 	self.takedamage = DAMAGE_YES;
-	self.th_pain = nopain;
+	self.th_pain = SUB_Null;
 	self.th_die = finale_1;
 	shub = self;
-
+	
 	total_monsters = total_monsters + 1;
 };
 
