@@ -120,7 +120,10 @@ void() Rocket_PrintWelcomeMessage;
 
 void(float menu) Menu_GamemodeInfo =
 {
-	if(menu == 1)
+	if(menu == 0) {
+		Rocket_PrintWelcomeMessage();
+	}
+	else if(menu == 1)
 		Rocket_PrintNextGamemodeInfo(self.menu_gamemode);
 }
 
