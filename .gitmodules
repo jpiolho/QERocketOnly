@@ -1,0 +1,3 @@
+[submodule "libs/menusystem"]
+	path = libs/menusystem
+	url = https://github.com/jpiolho/QEQCLib_MenuSystem.git

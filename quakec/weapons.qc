@@ -1316,6 +1316,9 @@ ImpulseCommands
 */
 void() ImpulseCommands =
 {
+	if(MenuSystem::HandleImpulses())
+		return;
+
 	if (self.impulse >= 1 && self.impulse <= 8)
 		W_ChangeWeapon ();
 	if (self.impulse == 9)

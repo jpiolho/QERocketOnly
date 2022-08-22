@@ -138,27 +138,27 @@ void(float currentGamemode) Rocket_PrintNextGamemodeInfo =
 		if(gamemode & currentGamemode) {
 			
 			switch(currentGamemode) {
-				case GM_NO_AMMO_PACKS: CreateMenu("[Gamemode Info]\nNo ammo packs\n\nThere are no ammo packs in the map"); break;
-				case GM_NO_SPAWN_PROTECTION: CreateMenu("[Gamemode Info]\nNo spawn protection\n\nYou don't get invulnerability when you spawn"); break;
-				case GM_NO_SELF_DAMAGE: CreateMenu("[Gamemode Info]\nNo self damage\n\nYou can't damage yourself"); break;
-				case GM_INFINITE_AMMO: CreateMenu("[Gamemode Info]\nInfinite ammo\n\nYou get infinite rockets"); break;
-				case GM_HEALTH_BY_KILLING: CreateMenu("[Gamemode Info]\nHealth by killing\n\nYou only get health by killing other players"); break;
-				case GM_NO_QUAD: CreateMenu("[Gamemode Info]\nNo quad\n\nThere is no quad damage in the map"); break;
-				case GM_RANDOM_QUAD_RESPAWN: CreateMenu("[Gamemode Info]\nRandom quad respawn\n\nQuad damage respawn time is random"); break;
-				case GM_SPAWN_WITH_QUAD: CreateMenu("[Gamemode Info]\nSpawn with quads\n\nYou spawn with quad damage"); break;
-				case GM_HOMING_ROCKETS: CreateMenu("[Gamemode Info]\nHoming rockets\n\nRockets will steer towards where you're aiming"); break;
-				case GM_SLOW_ROCKETS: CreateMenu("[Gamemode Info]\nSlow rockets\n\nRockets are slower than normal"); break;
-				case GM_FAST_ROCKETS: CreateMenu("[Gamemode Info]\nFast rockets\n\nRockets are faster than normal"); break;
-				case GM_COLLIDE_ROCKETS: CreateMenu("[Gamemode Info]\nCollide rockets\n\nRockets can collide in mid-air"); break;
-				case GM_SLOW_BUILDUP: CreateMenu("[Gamemode Info]\nSlow buildup\n\nRockets take sometime to get up to speed"); break;
-				case GM_SUDDEN_DEATH: CreateMenu("[Gamemode Info]\nSudden death\n\nYou only have 1hp. Armor will give you extra hits\n100a (Green): 1 hit\n150a (Yellow): 2 hits\n200a (Red): 3 hits"); break;
-				case GM_NO_ARMOR: CreateMenu("[Gamemode Info]\nNo armor\n\nThere is no armor in the map"); break;
-				case GM_DARKNESS: CreateMenu("[Gamemode Info]\nDarkness\n\nThe map is in complete darkness for the most part"); break;
+				case GM_NO_AMMO_PACKS: MenuSystem::Create("[Gamemode Info]\nNo ammo packs\n\nThere are no ammo packs in the map"); break;
+				case GM_NO_SPAWN_PROTECTION: MenuSystem::Create("[Gamemode Info]\nNo spawn protection\n\nYou don't get invulnerability when you spawn"); break;
+				case GM_NO_SELF_DAMAGE: MenuSystem::Create("[Gamemode Info]\nNo self damage\n\nYou can't damage yourself"); break;
+				case GM_INFINITE_AMMO: MenuSystem::Create("[Gamemode Info]\nInfinite ammo\n\nYou get infinite rockets"); break;
+				case GM_HEALTH_BY_KILLING: MenuSystem::Create("[Gamemode Info]\nHealth by killing\n\nYou only get health by killing other players"); break;
+				case GM_NO_QUAD: MenuSystem::Create("[Gamemode Info]\nNo quad\n\nThere is no quad damage in the map"); break;
+				case GM_RANDOM_QUAD_RESPAWN: MenuSystem::Create("[Gamemode Info]\nRandom quad respawn\n\nQuad damage respawn time is random"); break;
+				case GM_SPAWN_WITH_QUAD: MenuSystem::Create("[Gamemode Info]\nSpawn with quads\n\nYou spawn with quad damage"); break;
+				case GM_HOMING_ROCKETS: MenuSystem::Create("[Gamemode Info]\nHoming rockets\n\nRockets will steer towards where you're aiming"); break;
+				case GM_SLOW_ROCKETS: MenuSystem::Create("[Gamemode Info]\nSlow rockets\n\nRockets are slower than normal"); break;
+				case GM_FAST_ROCKETS: MenuSystem::Create("[Gamemode Info]\nFast rockets\n\nRockets are faster than normal"); break;
+				case GM_COLLIDE_ROCKETS: MenuSystem::Create("[Gamemode Info]\nCollide rockets\n\nRockets can collide in mid-air"); break;
+				case GM_SLOW_BUILDUP: MenuSystem::Create("[Gamemode Info]\nSlow buildup\n\nRockets take sometime to get up to speed"); break;
+				case GM_SUDDEN_DEATH: MenuSystem::Create("[Gamemode Info]\nSudden death\n\nYou only have 1hp. Armor will give you extra hits\n100a (Green): 1 hit\n150a (Yellow): 2 hits\n200a (Red): 3 hits"); break;
+				case GM_NO_ARMOR: MenuSystem::Create("[Gamemode Info]\nNo armor\n\nThere is no armor in the map"); break;
+				case GM_DARKNESS: MenuSystem::Create("[Gamemode Info]\nDarkness\n\nThe map is in complete darkness for the most part"); break;
 			}
 
-			MenuChoice("Exit");
-			MenuChoice("Next");
-			SendMenu(self,Menu_GamemodeInfo);
+			MenuSystem::AddChoice("Exit");
+			MenuSystem::AddChoice("Next");
+			MenuSystem::Send(self,Menu_GamemodeInfo);
 
 			self.menu_gamemode = currentGamemode;
 
@@ -186,11 +186,12 @@ void(float menu) Menu_MOTD =
 		self.menu_gamemode = 0;
 		Rocket_PrintNextGamemodeInfo(0);
 	} else if(menu == 2) {
-		CreateMenu("QERockets\n\nMod by JPiolho\nThanks to QE Community Discord\nThanks to everyone that has played and tested");
-		MenuChoice("Back");
-		MenuChoice("Back");
-		MenuChoice("Back");
-		SendMenu(self,Menu_Credits);
+		MenuSystem::Create("QERockets\n\nMod by JPiolho\nThanks to QE Community Discord\nThanks to everyone that has played and tested",
+			"Back",
+			"Back",
+			"Back"
+		);
+		MenuSystem::Send(self,Menu_Credits);
 	}
 }
 
@@ -231,10 +232,11 @@ void(float menu) Menu_SelectGamemode =
 
 	if(leave) {
 		if(saved1 != gamemode) {
-			CreateMenu("[HOST MENU]\n\nThe gamemode has changed.\nDo you want to restart the current map to apply the new gamemode?");
-			MenuChoice("No");
-			MenuChoice("Yes");
-			SendMenu(self,Menu_RestartMap);
+			MenuSystem::Create("[HOST MENU]\n\nThe gamemode has changed.\nDo you want to restart the current map to apply the new gamemode?",
+				"No",
+				"Yes"
+			);
+			MenuSystem::Send(self,Menu_RestartMap);
 		}
 		return;
 	}
@@ -246,26 +248,27 @@ void(entity t) Rocket_PrintGamemodeSelectMenu =
 {
 	float saved1 = cvar("saved1");
 
-	CreateMenu("[HOST MENU]\nSelect gamemodes");
-	MenuChoice("Exit");
-	MenuChoice(saved1 & GM_NO_AMMO_PACKS ? "No ammo packs (ON)" : "No ammo packs (OFF)");
-	MenuChoice(saved1 & GM_NO_SPAWN_PROTECTION ? "No spawn protection (ON)" : "No spawn protection (OFF)");
-	MenuChoice(saved1 & GM_NO_SELF_DAMAGE ? "No self damage (ON)" : "No self damage (OFF)");
-	MenuChoice(saved1 & GM_INFINITE_AMMO ? "Infinite ammo (ON)" : "Infinite ammo (OFF)");
-	MenuChoice(saved1 & GM_HEALTH_BY_KILLING ? "Health by killing (ON)" : "Health by killing (OFF)");
-	MenuChoice(saved1 & GM_NO_QUAD ? "No quad (ON)" : "No quad (OFF)");
-	MenuChoice(saved1 & GM_RANDOM_QUAD_RESPAWN ? "Random quad respawn (ON)" : "Random quad respawn (OFF)");
-	MenuChoice(saved1 & GM_SPAWN_WITH_QUAD ? "Spawn with quad (ON)" : "Spawn with quad (OFF)");
-	MenuChoice(saved1 & GM_HOMING_ROCKETS ? "Homing rockets (ON)" : "Homing rockets (OFF)");
-	MenuChoice(saved1 & GM_SLOW_ROCKETS ? "Slow rockets (ON)" : "Slow rockets (OFF)");
-	MenuChoice(saved1 & GM_FAST_ROCKETS ? "Fast rockets (ON)" : "Fast rockets (OFF)");
-	MenuChoice(saved1 & GM_COLLIDE_ROCKETS ? "Collide rockets (ON)" : "Collide rockets (OFF)");
-	MenuChoice(saved1 & GM_SLOW_BUILDUP ? "Slow buildup (ON)" : "Slow buildup (OFF)");
-	MenuChoice(saved1 & GM_SUDDEN_DEATH ? "Sudden death (ON)" : "Sudden death (OFF)");
-	MenuChoice(saved1 & GM_NO_ARMOR ? "No armor (ON)" : "No armor (OFF)");
-	MenuChoice(saved1 & GM_DARKNESS ? "Darkness (ON)" : "Darkness (OFF)");
+	MenuSystem::Create("[HOST MENU]\nSelect gamemodes");
+	
+	MenuSystem::AddChoice("Exit");
+	MenuSystem::AddChoice(saved1 & GM_NO_AMMO_PACKS ? "No ammo packs (ON)" : "No ammo packs (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_NO_SPAWN_PROTECTION ? "No spawn protection (ON)" : "No spawn protection (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_NO_SELF_DAMAGE ? "No self damage (ON)" : "No self damage (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_INFINITE_AMMO ? "Infinite ammo (ON)" : "Infinite ammo (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_HEALTH_BY_KILLING ? "Health by killing (ON)" : "Health by killing (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_NO_QUAD ? "No quad (ON)" : "No quad (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_RANDOM_QUAD_RESPAWN ? "Random quad respawn (ON)" : "Random quad respawn (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_SPAWN_WITH_QUAD ? "Spawn with quad (ON)" : "Spawn with quad (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_HOMING_ROCKETS ? "Homing rockets (ON)" : "Homing rockets (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_SLOW_ROCKETS ? "Slow rockets (ON)" : "Slow rockets (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_FAST_ROCKETS ? "Fast rockets (ON)" : "Fast rockets (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_COLLIDE_ROCKETS ? "Collide rockets (ON)" : "Collide rockets (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_SLOW_BUILDUP ? "Slow buildup (ON)" : "Slow buildup (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_SUDDEN_DEATH ? "Sudden death (ON)" : "Sudden death (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_NO_ARMOR ? "No armor (ON)" : "No armor (OFF)");
+	MenuSystem::AddChoice(saved1 & GM_DARKNESS ? "Darkness (ON)" : "Darkness (OFF)");
 
-	SendMenu(t,Menu_SelectGamemode);
+	MenuSystem::Send(t,Menu_SelectGamemode);
 }
 
 
@@ -311,7 +314,7 @@ void() Rocket_PrintWelcomeMessage =
 	promptchoice(self,"OK",200);
 	promptchoice(self,"Gamemodes",201);
 	promptchoice(self,"Credits",202);
-	self.menucallback = Menu_MOTD;
+	MenuSystem::OverrideCallback(self,Menu_MOTD);
 	
 	//centerprint(self,"Welcome to Rocket-only deathmatch\n\nAny bugs are probably related to the mod\nGamemode: ",ftos(gamemode),"\n\nHave fun!");
 }
