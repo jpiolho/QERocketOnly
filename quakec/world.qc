@@ -382,6 +382,8 @@ void StartFrame() {
     }
 
 	framecount = framecount + 1;
+
+	Antilag::StartFrame();
 };
 
 /*

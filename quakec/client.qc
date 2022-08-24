@@ -500,6 +500,9 @@ Player entered the suicide command
 */
 void() ClientKill =
 {
+	if(Antilag::ClientKill())
+		return;
+
 	bprint("$qc_suicides", self.netname);
 	set_suicide_frame ();
 	self.modelindex = modelindex_player;
@@ -783,6 +786,8 @@ void() PutClientInServer =
 	self.origin = spot.origin + '0 0 1';
 	self.angles = spot.angles;
 	self.fixangle = TRUE;		// turn this way immediately
+
+	Antilag::PlayerSpawn();
 
 	// oh, this is a hack!
 	setmodel (self, "progs/eyes.mdl");
@@ -1237,6 +1242,8 @@ void() PlayerPreThink =
 	if (self.view_ofs == '0 0 0')
 		return;		// intermission or finale
 
+	Antilag::PlayerPreThink();
+
 	makevectors (self.v_angle);		// is this still used
 
 	if (deathmatch || coop)
@@ -1482,7 +1489,9 @@ void() PlayerPostThink =
 	if ( self.deadflag ) {
 		return;
 	}
-		
+
+	Antilag::PlayerPostThink();
+
 	W_WeaponFrame (); // do weapon stuff
 
 	if(!(self.cnt & ROFL_SEEN_START_MESSAGE))
@@ -1492,9 +1501,6 @@ void() PlayerPostThink =
 		self.cnt |= ROFL_SEEN_START_MESSAGE;
 	}
 
-	// do weapon stuff
-
-	W_WeaponFrame ();
 
 	// check to see if player landed and play landing sound
 	if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
@@ -1530,7 +1536,9 @@ called when a player connects to a server
 */
 void() ClientConnect =
 {
-	if(!host)
+	Antilag::ClientConnect();
+
+	if(!(self.flags & FL_ISBOT) && !host)
 		host = self;
 
 	if(!(self.flags & FL_ISBOT))

@@ -58,28 +58,31 @@ void() W_FireAxe =
 
 	makevectors (self.v_angle);
 	source = self.origin + '0 0 16';
-	traceline (source, source + v_forward*64, FALSE, self);
-	if (trace_fraction == 1.0)
-		return;
-	
-	org = trace_endpos - v_forward*4;
 
-	if (trace_ent.takedamage)
-	{
-		trace_ent.axhitme = 1;
-		SpawnBlood (org, '0 0 0', 20);
-		T_Damage (trace_ent, self, self, 20);
-	}
-	else
-	{	// hit wall
-		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-		//stuffcmd (self, "vibrate tactile/player/axhit2.bnvib");
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
-	}
+	ANTILAG_REWIND_SCOPE(self,{
+		traceline (source, source + v_forward*64, FALSE, self);
+		if (trace_fraction == 1.0)
+			return;
+		
+		org = trace_endpos - v_forward*4;
+	
+		if (trace_ent.takedamage)
+		{
+			trace_ent.axhitme = 1;
+			SpawnBlood (org, '0 0 0', 20);
+			T_Damage (trace_ent, self, self, 20);
+		}
+		else
+		{	// hit wall
+			sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
+			//stuffcmd (self, "vibrate tactile/player/axhit2.bnvib");
+			WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+			WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+			WriteCoord (MSG_BROADCAST, org_x);
+			WriteCoord (MSG_BROADCAST, org_y);
+			WriteCoord (MSG_BROADCAST, org_z);
+		}
+	});
 };
 
 
@@ -436,6 +439,8 @@ void() W_FireRocket =
 	setmodel (missile, "progs/missile.mdl");
 	setsize (missile, '0 0 0', '0 0 0');		
 	setorigin (missile, self.origin + v_forward*8 + '0 0 16');
+
+	Antilag::SetAsAntilagProjectile(self,missile);
 };
 
 /*

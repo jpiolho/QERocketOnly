@@ -146,7 +146,7 @@ void() item_health =
 
 	if (self.spawnflags & H_ROTTEN)
 	{
-		if(gamemode & GM_HEALTH_BY_KILLING)
+		if(gamemode & (GM_HEALTH_BY_KILLING | GM_SUDDEN_DEATH))
 		{
 			remove(self);
 			return;
@@ -171,7 +171,7 @@ void() item_health =
 	}
 	else
 	{
-		if(gamemode & GM_HEALTH_BY_KILLING)
+		if(gamemode & (GM_HEALTH_BY_KILLING | GM_SUDDEN_DEATH))
 		{
 			remove(self);
 			return;

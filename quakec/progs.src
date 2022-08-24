@@ -8,6 +8,7 @@ maps.qc
 observer.qc
 
 ../libs/menusystem/menusystem.qc
+../libs/antilag/antilag.qc
 
 gamemodes.qc
 rocketonly.qc

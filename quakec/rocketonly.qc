@@ -289,6 +289,8 @@ void() Rocket_PrintWelcomeMessage =
 	WriteChars('A','n','y',' ','b','u','g','s',' ','a','r','e',' ','p','r','o');WriteChars('b','a','b','l','y',' ','r','e','l','a','t','e','d',' ','t','o');WriteChars(' ','t','h','e',' ','m','o','d','\n');
 	WriteChars('H','a','v','e',' ','f','u','n','!');
 	WriteByte(MSG_ONE,'\n');
+	WriteChars('T','h','i','s',' ','m','o','d',' ','i','s',' ','r','u','n','n');WriteChars('i','n','g',' ','a','n','t','i','-','l','a','g');
+	WriteByte(MSG_ONE,'\n');
 	WriteByte(MSG_ONE,'\n');
 	WriteByte(MSG_ONE,'\n');
 

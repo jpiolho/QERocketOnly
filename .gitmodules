@@ -1,3 +1,6 @@
 [submodule "libs/menusystem"]
 	path = libs/menusystem
 	url = https://github.com/jpiolho/QEQCLib_MenuSystem.git
+[submodule "libs/antilag"]
+	path = libs/antilag
+	url = https://github.com/jpiolho/QEQCLib_Antilag.git
