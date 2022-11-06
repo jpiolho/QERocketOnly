@@ -1131,6 +1131,9 @@ Go to the next weapon with ammo
 */
 void() CycleWeaponCommand =
 {
+	if(!self.weapon)
+		return;
+		
 	local	float	it, am;
 	
 	it = self.items;
@@ -1212,6 +1215,9 @@ Go to the prev weapon with ammo
 */
 void() CycleWeaponReverseCommand =
 {
+	if(!self.weapon)
+		return;
+
 	local float it, am;
 
 	it = self.items;
